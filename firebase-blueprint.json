@@ -1,0 +1,210 @@
+{
+  "entities": {
+    "Transaction": {
+      "title": "Transaction",
+      "description": "An expense or income transaction logged by a user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique transaction document ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The authenticated user UID who created this transaction"
+        },
+        "title": {
+          "type": "string",
+          "description": "Transaction title or merchant name"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Transaction amount in monetary units"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["EXPENSE", "INCOME"],
+          "description": "Type of transaction: EXPENSE or INCOME"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category name for this transaction"
+        },
+        "dateMillis": {
+          "type": "integer",
+          "description": "Timestamp in milliseconds when the transaction occurred"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method used (e.g. Card, Cash, Bank Transfer)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional user notes for this transaction"
+        },
+        "savingsGoalId": {
+          "type": "string",
+          "description": "Optional associated savings goal ID if this is a contribution"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of document creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update"
+        }
+      },
+      "required": ["userId", "title", "amount", "type", "category", "dateMillis", "createdAt"]
+    },
+    "CategoryBudget": {
+      "title": "CategoryBudget",
+      "description": "Monthly spending allowance limit for a category",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The user UID owner"
+        },
+        "categoryName": {
+          "type": "string",
+          "description": "Name of the category"
+        },
+        "monthlyLimit": {
+          "type": "number",
+          "description": "Monthly spending limit"
+        },
+        "iconName": {
+          "type": "string",
+          "description": "Icon identifier for this category"
+        },
+        "colorHex": {
+          "type": "string",
+          "description": "Hex color string for this category"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of document creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update"
+        }
+      },
+      "required": ["userId", "categoryName", "monthlyLimit", "createdAt"]
+    },
+    "SavingsGoal": {
+      "title": "SavingsGoal",
+      "description": "A target savings goal for the user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique goal ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The user UID owner"
+        },
+        "title": {
+          "type": "string",
+          "description": "Name or title of the savings goal"
+        },
+        "targetAmount": {
+          "type": "number",
+          "description": "Target amount to save"
+        },
+        "currentAmount": {
+          "type": "number",
+          "description": "Current saved amount"
+        },
+        "targetDateMillis": {
+          "type": "integer",
+          "description": "Target deadline date in milliseconds"
+        },
+        "categoryIcon": {
+          "type": "string",
+          "description": "Icon identifier for this goal"
+        },
+        "colorHex": {
+          "type": "string",
+          "description": "Hex color code"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes on this goal"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of update"
+        }
+      },
+      "required": ["userId", "title", "targetAmount", "currentAmount", "targetDateMillis", "createdAt"]
+    },
+    "SavingsContribution": {
+      "title": "SavingsContribution",
+      "description": "A deposit or withdrawal ledger entry for a savings goal",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique contribution ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The user UID owner"
+        },
+        "goalId": {
+          "type": "string",
+          "description": "The target savings goal ID"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount deposited (positive) or withdrawn (negative)"
+        },
+        "dateMillis": {
+          "type": "integer",
+          "description": "Timestamp in milliseconds"
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of document creation"
+        }
+      },
+      "required": ["userId", "goalId", "amount", "dateMillis", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "All income and expense transactions created by the user"
+    },
+    "/users/{userId}/category_budgets/{budgetId}": {
+      "schema": "CategoryBudget",
+      "description": "Category monthly spending caps for the user"
+    },
+    "/users/{userId}/savings_goals/{goalId}": {
+      "schema": "SavingsGoal",
+      "description": "Savings goals set by the user"
+    },
+    "/users/{userId}/savings_contributions/{contributionId}": {
+      "schema": "SavingsContribution",
+      "description": "Savings goal deposit and withdrawal history for the user"
+    }
+  }
+}
